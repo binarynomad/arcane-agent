@@ -8,6 +8,10 @@ services:
       - EDGE_TRANSPORT=poll
       # Token is loaded from the .env file in this directory (see .env.example).
       - AGENT_TOKEN=${AGENT_TOKEN}
+      # URL of your MAIN Arcane server, reachable from this agent.
+      # - Agent on the same machine as the main server: http://localhost:3552
+      # - Remote agent (e.g. over Tailscale): http://<main-arcane-tailscale-ip>:3552
+      #   or leave unset — the agent connects outbound using the token.
       - MANAGER_API_URL=http://localhost:3552
       # --- Local Docker project management ---
       # Uncomment the two lines below if you intend to let Arcane manage
