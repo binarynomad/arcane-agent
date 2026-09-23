@@ -1,0 +1,32 @@
+services:
+  arcane-agent:
+    image: ghcr.io/getarcaneapp/agent:latest
+    container_name: arcane-agent
+    restart: unless-stopped
+    environment:
+      - AGENT_MODE=true
+      - EDGE_TRANSPORT=poll
+      # Token is loaded from the .env file in this directory (see .env.example).
+      - AGENT_TOKEN=${AGENT_TOKEN}
+      - MANAGER_API_URL=http://localhost:3552
+      # --- Local Docker project management ---
+      # Uncomment the two lines below if you intend to let Arcane manage
+      # Docker compose projects in a folder on this local machine (not just
+      # the agent's own projects). Adjust the host path to wherever you keep
+      # your compose project folders.
+      #
+      # NOTE: The arcane agent process drops down to UID/GID 65532 by default,
+      # so it is best to set the owner of the Docker project folder to 65532:
+      #   sudo chown -R 65532:65532 /opt/docker
+      #- PROJECTS_DIRECTORY=/opt/docker
+    ports:
+      - "3553:3553"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - arcane-data:/app/data
+      # Uncomment if you enabled PROJECTS_DIRECTORY above — the host folder
+      # must be mounted into the container at the same path.
+      #- /opt/docker:/opt/docker
+
+volumes:
+  arcane-data:
