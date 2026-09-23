@@ -72,3 +72,24 @@ docker compose logs -f arcane-agent
 ```
 
 The agent connects outbound to your main Arcane instance, so you don't need to open any ports on this machine beyond the local `3553` binding.
+
+## Troubleshooting
+
+### `Failed to Setup IP tables ... No chain/target/match by that name`
+
+Seen on Raspberry Pi / DietPi hosts: the Docker daemon's iptables chains are
+stale or it started before the kernel networking modules loaded. Fix:
+
+```bash
+sudo systemctl restart docker
+docker compose up -d
+```
+
+If it recurs on every boot, make sure the nftables backend is in use
+(`iptables --version` should mention `nf_tables`) and consider adding
+`br_netfilter` / `iptable_filter` to `/etc/modules-load.d/` so the modules are
+loaded at boot before the Docker daemon starts.
+
+### `analytics heartbeat failed ... 429 Too Many Requests`
+
+Harmless — this is anonymous usage telemetry being rate-limited. Ignore it.
